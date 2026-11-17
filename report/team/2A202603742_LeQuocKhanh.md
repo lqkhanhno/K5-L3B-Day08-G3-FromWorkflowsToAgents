@@ -26,7 +26,7 @@ Viết bộ test hồi quy `src/tests/test_khanh_ledger_policy_crash.py` gồm 4
 
 Ngoài ra mình chạy lại crash suite và cập nhật `src/reports/crash.json`, kết quả 20/20.
 
-Bộ test nằm ở nhánh codex/khanh-ledger-policy-crash, commit 3911f7d.
+Bộ test nằm ở nhánh lequockhanh (tên cũ codex/khanh-ledger-policy-crash), commit 3911f7d.
 
 ## 4. Bằng chứng
 
@@ -35,15 +35,16 @@ Các lệnh chạy trong thư mục src:
 - `python -m pytest -q tests/test_khanh_ledger_policy_crash.py -o addopts=` cho 45 passed trên cả ba shape.
 - `python -m lab8.crash_test --count 20 --out reports/crash.json` cho crash_safety 20/20, kết quả ghi trong src/reports/crash.json.
 - `python -m pytest -q` cho 202 passed trên toàn bộ test ngoài ma trận student, tức là phần host và ba shape không bị bộ test mới làm hỏng gì.
-- Ma trận student `python -m pytest -q -m student -o addopts=` cho 248 passed, cả ba shape đều pass sau khi shape B của Minh được merge.
+- Ma trận student `python -m pytest -q -m student -o addopts=` cho 378 passed (sau khi 130 test bảo mật của Thắng cũng được tính vào ma trận), cả ba shape đều pass.
+- Kiểm tra độ bắt lỗi của bộ test: tạm sửa `cap_per_order: true` thành `false` trong `src/config/autonomy_policy.yaml` rồi chạy lại `test_second_claim_cannot_refund_same_order_again` thì 3 test đỏ ngay trên cả ba shape; trả file về nguyên trạng thì 3 test xanh lại. Bộ test bắt được lỗi thật chứ không pass vô điều kiện.
 
 ## 5. Công cụ AI đã dùng
 
-- ZCode (trợ lý AI chạy trên máy): pull nhánh của mọi người về, đọc code host trong policy.py và durability.py để nắm các mốc crash và các reason của cổng approval, viết bộ test hồi quy ở mục 3, chạy test và crash suite, viết nháp báo cáo này.
-- Cách tự kiểm tra: <!-- TODO: sửa lại đúng những gì bạn đã tự làm, ví dụ: -->
-  - Tự chạy lại các lệnh ở mục 4 và đối chiếu số liệu với báo cáo.
+- ZCode (trợ lý AI chạy trên máy): pull nhánh của mọi người về, đọc code host trong policy.py và durability.py để nắm các mốc crash và các reason của cổng approval, viết bộ test hồi quy ở mục 3, chạy test, crash suite và benchmark, viết nháp báo cáo này và phần điền của nhóm trong TEAM.md, group_report.md, decision_adr.md, research_card.md.
+- Cách tự kiểm tra:
+  - Tự chạy lại các lệnh ở mục 4 trên máy mình và đối chiếu số liệu với báo cáo.
   - Đọc từng test trong file, đối chiếu với docstring của policy.py, durability.py và bảng luật nghiệp vụ trong docs/business_rules.md.
-  - Tạm bỏ một điều kiện cap trong policy.py rồi chạy lại test để thấy bộ test bắt được lỗi, sau đó trả lại như cũ.
+  - Tạm tắt `cap_per_order` trong `src/config/autonomy_policy.yaml` rồi chạy lại bộ test để thấy nó đỏ ngay (3 failed trên cả ba shape), sau đó trả file về nguyên trạng bằng `git checkout` và chạy lại cho xanh.
 
 ## 6. Tự đánh giá
 
