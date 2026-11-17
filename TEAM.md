@@ -12,7 +12,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Nguyễn Hữu Thịnh | 2A202603726 | nht702812@gmail.com | huuthinh812 | Workflow (Core Developer), Shape A |
-|   2 |        |      |       |        |         |
+|   2 | Lê Quốc Khánh | 2A202603742 | | lqkhanhno | ledger/policy/crash (cổng host) |
 |   3 | Đoàn Đăng Khoa | 2A202603766 | 26ai.khoadd@vinuni.edu.vn | ddkhoa2605 | orchestrator + handoff (Shape C) |
 
 Gợi ý chia vai:
@@ -28,6 +28,7 @@ Gợi ý chia vai:
 | --- | --- | --- | --- |
 | Nguyễn Hữu Thịnh (2A202603726) | Workflow (Core Developer), Shape A | `1484656` feat(workflow): implement shape A deterministic workflow + crash report; `057ee06` test(workflow): add shape A boundary tests | Thêm `src/tests/test_workflow_boundary.py` (31 test: ticket là dữ liệu, chỉ gọi host khi quote > 0 với quote đầy đủ, trace không lộ ticket/secret/PII). Chạy pass 62 student test workflow |
 | Đoàn Đăng Khoa (2A202603766) | orchestrator + handoff (Shape C) | `fa395d8` | `src/tests/test_orchestrator_boundary.py` (37 test: trace không lộ secret/PII, handoff allowlist chỉ đọc, ticket không ghi đè delay/injection, approval mượn/thiếu bị chặn, 3 điểm crash resume ra 1 refund, retry, T14 quote đầy đủ) |
+| Lê Quốc Khánh (2A202603742) | ledger/policy/crash (cổng host) | `3911f7d` test(ledger): add host boundary regression tests | `src/tests/test_khanh_ledger_policy_crash.py` (45 test chạy qua cả 3 shape: approval hỏng không ghi tiền, crash ở 3 mốc rồi retry không trả kép, đổi quote sau commit ra amount_conflict, cap theo đơn giữa các claim) |
 
 ## Cá nhân
 
@@ -97,3 +98,22 @@ Báo cáo đầy đủ: [report/team/2A202603766_DoanDangKhoa.md](report/team/2A
 - `python -m pytest -q` → `91 passed, 248 deselected` (gồm 37 test mới).
 - Benchmark tự kiểm `--shapes orchestrator,swarm`, seed `11,22,33,44,55`: orchestrator pass 1.000, pass^5 1.000, cost/success 57.19, steps 5.36; swarm pass 0.986, pass^5 0.929.
 - Crash rồi resume C-012 (`after_effect_before_checkpoint`): lần 2 `resolved`, `idempotent_replay`, ledger 1 dòng, trace `R-orchestrator-C-012-s11`.
+
+## 2A202603742_LeQuocKhanh
+
+Báo cáo đầy đủ: [report/team/2A202603742_LeQuocKhanh.md](report/team/2A202603742_LeQuocKhanh.md).
+
+### Phần việc phụ trách
+
+- Người 5, mảng ledger, policy và crash: giữ các ranh giới host mà mọi shape phải đi qua — cổng approval (`src/lab8/policy.py`), sổ hoàn tiền và checkpoint (`src/lab8/durability.py`), crash suite (`src/lab8/crash_test.py`).
+
+### Đóng góp cụ thể
+
+- Commit `3911f7d`: thêm `src/tests/test_khanh_ledger_policy_crash.py` — 45 test hồi quy chạy qua cả ba shape đã giao (workflow, single, orchestrator) để chứng minh shape/model không thể né cổng host.
+- Chạy lại crash suite và cập nhật `src/reports/crash.json` (20/20).
+
+### Bằng chứng
+
+- `python -m pytest -q tests/test_khanh_ledger_policy_crash.py -o addopts=` → 45 passed.
+- `python -m pytest -q` → 202 passed; ma trận student → 248 passed (cả ba shape).
+- `python -m lab8.crash_test --count 20 --out reports/crash.json` → crash_safety 20/20.
