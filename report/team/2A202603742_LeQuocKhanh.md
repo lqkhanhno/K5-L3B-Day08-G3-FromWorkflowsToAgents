@@ -4,7 +4,7 @@
 
 - Họ tên: Lê Quốc Khánh
 - MSSV: 2A202603742
-- Email: <!-- TODO: tự điền -->
+- Email: 26ai.khanhlq2@vinuni.edu.vn
 - GitHub: lqkhanhno
 
 ## 2. Phần việc phụ trách
@@ -40,7 +40,7 @@ Các lệnh chạy trong thư mục src:
 
 ## 5. Công cụ AI đã dùng
 
-- ZCode (trợ lý AI chạy trên máy): pull nhánh của mọi người về, đọc code host trong policy.py và durability.py để nắm các mốc crash và các reason của cổng approval, viết bộ test hồi quy ở mục 3, chạy test, crash suite và benchmark, viết nháp báo cáo này và phần điền của nhóm trong TEAM.md, group_report.md, decision_adr.md, research_card.md.
+- ZCode: pull nhánh của mọi người về, đọc code host trong policy.py và durability.py để nắm các mốc crash và các reason của cổng approval, viết bộ test hồi quy ở mục 3, chạy test, crash suite và benchmark, viết nháp báo cáo này và phần điền của nhóm trong TEAM.md, group_report.md, decision_adr.md, research_card.md.
 - Cách tự kiểm tra:
   - Tự chạy lại các lệnh ở mục 4 trên máy mình và đối chiếu số liệu với báo cáo.
   - Đọc từng test trong file, đối chiếu với docstring của policy.py, durability.py và bảng luật nghiệp vụ trong docs/business_rules.md.
@@ -48,8 +48,4 @@ Các lệnh chạy trong thư mục src:
 
 ## 6. Tự đánh giá
 
-<!-- TODO: phần này bạn tự viết (RULES.md không cho dùng AI viết phần tự đánh giá). Gợi ý:
-- Mức hoàn thành so với nhiệm vụ được giao.
-- Điều bạn hiểu rõ nhất sau bài lab (ví dụ vì sao truyền quote đầy đủ vào issue_refund, vì sao checkpoint không làm side effect thành exactly-once).
-- Điều còn chưa chắc hoặc sẽ làm khác nếu làm lại.
--->
+- 

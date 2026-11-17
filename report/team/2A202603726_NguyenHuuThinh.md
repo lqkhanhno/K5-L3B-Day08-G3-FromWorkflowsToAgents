@@ -4,7 +4,7 @@
 
 - Họ tên: Nguyễn Hữu Thịnh
 - MSSV: 2A202603726
-- Email: nht702812@gmail.com
+- Email: 26ai.thinhnh2@vinuni.edu.vn
 - GitHub: huuthinh812
 
 ## 2. Phần việc phụ trách
