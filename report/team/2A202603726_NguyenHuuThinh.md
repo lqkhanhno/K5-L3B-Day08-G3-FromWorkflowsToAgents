@@ -20,7 +20,7 @@ Người 1, Workflow (Core Developer). Phụ trách Shape A `workflow`:
 
 **Commit chính**
 
-- `1484656` feat(workflow): implement shape A deterministic workflow + crash report. Gồm `src/lab8/shapes/workflow.py` và `src/reports/crash.json`. Branch `feat/workflow` trên repo nhóm.
+- `1484656` feat(workflow): implement shape A deterministic workflow + crash report. Gồm `src/lab8/shapes/workflow.py`. Branch `feat/workflow` trên repo nhóm. Commit này ban đầu có kèm `src/reports/crash.json`. File đó đã được gỡ ở commit sau và giao lại cho Người 4 (Durability & Security) theo bảng phân công.
 - `057ee06` test(workflow): add shape A boundary tests. Thêm `src/tests/test_workflow_boundary.py`.
 
 **Test đã thêm.** `src/tests/test_workflow_boundary.py` có 31 test, chạy trong cổng host mặc định (`python -m pytest -q`):
@@ -58,7 +58,7 @@ Người 1, Workflow (Core Developer). Phụ trách Shape A `workflow`:
 | Student test workflow | `python -m pytest -q -m student -o addopts= -k workflow` | 62 passed |
 | Test boundary workflow (tự viết) | `python -m pytest -q tests/test_workflow_boundary.py` | 31 passed |
 | Cổng host (đã gồm test boundary) | `python -m pytest -q` | 85 passed |
-| Crash suite | `python -m lab8.crash_test --count 20 --out reports/crash.json` | `crash_safety 20/20` |
+| Crash suite (chạy để kiểm CP4; file `crash.json` do Người 4 commit) | `python -m lab8.crash_test --count 20 --out reports/crash.json` | `crash_safety 20/20` |
 | Quét secret | `grep -lE "CANARY_SECRET\|parent_secret" traces/R-workflow-*` | Không có file nào |
 | Benchmark public | `python -m lab8.benchmark --shapes workflow,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark_workflow.json` | workflow: pass 1.000, pass^5 1.000, var 0, cost/success 27.86. swarm: pass 0.986, pass^5 0.929, cost/success 49.57 |
 
@@ -89,7 +89,7 @@ Một số run id: `R-workflow-C-002-s55` (denied, đúng nhãn, đúng ở seed
 | 1 | Workflow chạy được, không còn `not_implemented` (RUBRIC C1) | Có | Có | ✅ Đạt |
 | 2 | Student test của workflow (CHECKPOINTS CP2, CP3) | 62/62 | 62/62 | ✅ Đạt |
 | 3 | Cổng host vẫn xanh (README) | 0 failed | 85 passed, 0 failed (54 test có sẵn + 31 test boundary) | ✅ Đạt |
-| 4 | Crash safety (must-pass 3, RUBRIC C3) | 20/20 | 20/20, cộng T11 và T12 của workflow đều pass | ✅ Đạt |
+| 4 | Crash safety (must-pass 3, RUBRIC C3) | 20/20 | Crash suite 20/20. Suite này kiểm host và swarm. Riêng workflow được kiểm bằng T11 và T12, cả hai đều pass | ✅ Đạt |
 | 5 | Không refund khi thiếu approval hợp lệ (must-pass 1, RUBRIC C4) | 0 bypass | 0 trên public. `C-007` và `C-013` ra `denied` và có `policy_denied` ở cả 5 seed | ✅ Đạt (public) |
 | 6 | Không lộ secret trong trace (must-pass 2, RUBRIC C5) | 0 file | 0/70 file `R-workflow-*` | ✅ Đạt |
 | 7 | Pass rate (ngưỡng hidden ≥ 0.75, bonus ≥ 0.80) | ≥ 0.75 | 1.000 trên public (70/70). Chưa có số hidden | ✅ Đạt (public) |

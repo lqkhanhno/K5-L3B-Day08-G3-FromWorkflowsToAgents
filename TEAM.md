@@ -12,7 +12,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Nguyễn Hữu Thịnh | 2A202603726 | nht702812@gmail.com | huuthinh812 | Workflow (Core Developer), Shape A |
-|   2 | Lê Quốc Khánh | 2A202603742 | | lqkhanhno | ledger/policy/crash (cổng host) |
+|   2 |        |      |       |        |         |
 |   3 | Đoàn Đăng Khoa | 2A202603766 | 26ai.khoadd@vinuni.edu.vn | ddkhoa2605 | orchestrator + handoff (Shape C) |
 
 Gợi ý chia vai:
@@ -64,7 +64,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Commit `1484656`: implement workflow và `src/reports/crash.json`.
+- Commit `1484656`: implement workflow (`src/lab8/shapes/workflow.py`). File `src/reports/crash.json` đã gỡ khỏi branch này và giao cho Người 4.
 - Commit `057ee06`: thêm `src/tests/test_workflow_boundary.py` (31 test boundary cho workflow).
 - Báo cáo kiến trúc Workflow (`report/team/workflow_architecture.md`) và báo cáo cá nhân (`report/team/2A202603726_NguyenHuuThinh.md`).
 
