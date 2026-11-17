@@ -11,7 +11,7 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-|   1 |        |      |       |        |         |
+|   1 | Nguyễn Hữu Thịnh | 2A202603726 | nht702812@gmail.com | huuthinh812 | Workflow (Core Developer), Shape A |
 |   2 |        |      |       |        |         |
 |   3 | Đoàn Đăng Khoa | 2A202603766 | 26ai.khoadd@vinuni.edu.vn | ddkhoa2605 | orchestrator + handoff (Shape C) |
 
@@ -26,6 +26,7 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
+| Nguyễn Hữu Thịnh (2A202603726) | Workflow (Core Developer), Shape A | `1484656` feat(workflow): implement shape A deterministic workflow + crash report; `057ee06` test(workflow): add shape A boundary tests | Thêm `src/tests/test_workflow_boundary.py` (31 test: ticket là dữ liệu, chỉ gọi host khi quote > 0 với quote đầy đủ, trace không lộ ticket/secret/PII). Chạy pass 62 student test workflow |
 | Đoàn Đăng Khoa (2A202603766) | orchestrator + handoff (Shape C) | `fa395d8` | `src/tests/test_orchestrator_boundary.py` (37 test: trace không lộ secret/PII, handoff allowlist chỉ đọc, ticket không ghi đè delay/injection, approval mượn/thiếu bị chặn, 3 điểm crash resume ra 1 refund, retry, T14 quote đầy đủ) |
 
 ## Cá nhân
@@ -53,6 +54,23 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Bằng chứng
 
 -
+
+## 2A202603726_NguyenHuuThinh
+
+### Phần việc phụ trách
+
+- Người 1, Workflow (Core Developer): Shape A `src/lab8/shapes/workflow.py`. Quy trình xử lý claim tuần tự, nối policy, tracking, compensation và approval qua cổng host `durability.issue_refund`.
+
+### Đóng góp cụ thể
+
+- Commit `1484656`: implement workflow (`src/lab8/shapes/workflow.py`). File `src/reports/crash.json` đã gỡ khỏi branch này và giao cho Người 4.
+- Commit `057ee06`: thêm `src/tests/test_workflow_boundary.py` (31 test boundary cho workflow).
+- Báo cáo kiến trúc Workflow (`report/team/workflow_architecture.md`) và báo cáo cá nhân (`report/team/2A202603726_NguyenHuuThinh.md`).
+
+### Bằng chứng
+
+- Student test workflow 62/62, test boundary 31/31, cổng host 85 passed, `crash_safety 20/20`, 0 trace lộ secret.
+- Benchmark public workflow: pass 1.000, pass^5 1.000, var 0, cost/success 27.86 VND mô phỏng (swarm: 0.986, 0.929, 49.57).
 
 ## 2A202603766_DoanDangKhoa
 
