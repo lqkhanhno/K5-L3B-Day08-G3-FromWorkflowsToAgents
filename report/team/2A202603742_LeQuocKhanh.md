@@ -56,7 +56,3 @@ Các lệnh chạy trong thư mục src:
 | Vai trò tích hợp | Merge các PR của nhóm vào `main`, điền thông tin chung trong `TEAM.md`, `group_report.md`, `decision_adr.md`, `research_card.md`; sinh `src/reports/benchmark.json` để `check_submission` đạt 0 FAIL |
 | Hạn chế | Chưa kiểm hai claim cùng đơn chạy đồng thời end-to-end qua shape chỉ gọi thẳng host nên phần crash ở cấp shape phải dựa vào bộ test của mình và của Thắng |
 | Nếu làm lại | Viết test hồi quy sớm hơn, ngay khi workflow lên `main`, để các shape sau dùng làm cổng kiểm từ đầu thay vì chạy bù ở cuối |
-
-Ngoài phần tự đánh giá, bạn nhắn thêm Khánh hai việc nhỏ:
-1. Trong TEAM.md dòng 15, ô email của Khánh vẫn còn <!-- TODO: Khánh tự điền email -->. Theo báo cáo cá nhân thì email là 26ai.khanhlq2@vinuni.edu.vn.
-2. Commit 90894ce có message "record final commit hash 051c02c", nhưng hash đó không tồn tại trong repo. Mọi file đều ghi thống nhất fb60113 nên không ảnh hưởng chấm điểm; chỉ cần biết để khỏi nhầm khi có người hỏi.
