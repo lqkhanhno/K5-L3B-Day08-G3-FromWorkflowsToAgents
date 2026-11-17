@@ -11,8 +11,8 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-|   1 | Nguyễn Hữu Thịnh | 2A202603726 | nht702812@gmail.com | huuthinh812 | Workflow (Core Developer), Shape A |
-|   2 | Lê Quốc Khánh | 2A202603742 | <!-- TODO: Khánh tự điền email --> | lqkhanhno | ledger/policy/crash (cổng host) |
+|   1 | Nguyễn Hữu Thịnh | 2A202603726 | 26ai.thinhnh2@vinuni.edu.vn | huuthinh812 | Workflow (Core Developer), Shape A |
+|   2 | Lê Quốc Khánh | 2A202603742 | 26ai.khanhlq2@vinuni.edu.vn | lqkhanhno | ledger/policy/crash (cổng host) |
 |   3 | Vũ Đình Thắng | 2A202603753 | 26ai.thangvd2@vinuni.edu.vn | ThangVu2303 | Durability & Security (QA độc lập) |
 |   4 | Đoàn Đăng Khoa | 2A202603766 | 26ai.khoadd@vinuni.edu.vn | ddkhoa2605 | orchestrator + handoff (Shape C) |
 |   5 | Nguyễn Văn Minh | 2A202603771 | 26ai.minhnv7@vinuni.edu.vn | vminh21 | Single ReAct Agent (Shape B) |
