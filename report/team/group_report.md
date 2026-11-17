@@ -5,7 +5,7 @@ Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/rep
 ## 1. Thông tin nhóm
 
 - Tên nhóm: G3 (Lớp L3B)
-- Thành viên: xem `TEAM.md` — 5 người: Thịnh (workflow), Khánh (ledger/policy/crash), Thắng (Durability & Security), Khoa (orchestrator), Minh (single)
+- Thành viên: xem `TEAM.md` — 5 người: Thịnh (workflow), Khánh (ledger/policy/crash), Thắng (Durability & Security), Khoa (orchestrator), Minh (single, kiểm thử tích hợp cuối)
 - Commit chốt (trùng `report/team/decision_adr.md`): fb60113
 
 ## 2. Mục tiêu và cách tiếp cận
@@ -69,7 +69,41 @@ Bảng so sánh 4 shape trên bộ public, 14 claim × seed 11–55, cùng MockL
 
 Trial sai duy nhất của swarm là `C-002` seed 55: ticket khai trễ 5 ngày, order ghi 2 ngày, swarm tin ticket nên trả `resolved` thay vì `denied`.
 
-Crash safety: `20/20` (`src/reports/crash.json`). Rò rỉ: quét 282 file trace trong `src/traces/` tìm `CANARY_SECRET`, `parent_secret`, `raw_headers`, `Bearer ` ra 0 file; 130 test bảo mật của Thắng quét thêm cả stdout/stderr và PII của mọi đơn, đều pass. Cổng host: 202 passed ngoài ma trận student; ma trận student đầy đủ: 378 passed (T01–T14 × 5 seed cho workflow, single, orchestrator, swarm + 130 test bảo mật). Chưa có kết quả tự kiểm trên `student_drop/` vì bộ hidden chưa được phát.
+Crash safety: `20/20` (`src/reports/crash.json`). Rò rỉ: quét 282 file trace trong `src/traces/` tìm `CANARY_SECRET`, `parent_secret`, `raw_headers`, `Bearer ` ra 0 file; 130 test bảo mật của Thắng quét thêm cả stdout/stderr và PII của mọi đơn, đều pass. Cổng host: 202 passed ngoài ma trận student; ma trận student đầy đủ: 378 passed (T01–T14 × 5 seed cho workflow, single, orchestrator, swarm + 130 test bảo mật).
+
+### 4.1 Kiểm thử tích hợp cuối (Nguyễn Văn Minh)
+
+Sau khi cả sáu PR đã merge vào `main` (commit `554c6d2`; mã nguồn và test trong `src/lab8`, `src/tests` trùng với commit chốt `fb60113`), toàn bộ cổng được chạy lại một lần trên Python 3.12, trong `src/`:
+
+| Kiểm tra | Lệnh | Kết quả |
+| --- | --- | --- |
+| Cài đặt | `python -m lab8.smoke` | `lab8.smoke pass` |
+| Cổng host | `python -m pytest -q` | 202 passed, 0 failed |
+| Ma trận student + bảo mật | `python -m pytest -q -m student -o addopts=` | 378 passed, 0 failed |
+| Tái lập benchmark | Chạy lại lệnh benchmark public và so với `src/reports/benchmark.json` | Khớp hoàn toàn ở cả 4 shape (pass, pass^5, variance, cost/success, steps) |
+| Crash suite | `python -m lab8.crash_test --count 20` | 20/20, khớp `src/reports/crash.json` |
+| Định dạng bài nộp | `python -m lab8.check_submission` | 0 FAIL |
+
+**Tự kiểm trên bộ hidden.** `student_drop/` được đặt trong `src/` theo hướng dẫn và giữ nguyên trong `.gitignore` (không commit, theo `RULES.md`). Lệnh:
+
+`python -m lab8.benchmark --shapes workflow,single,orchestrator --cases student_drop/hidden_claims.jsonl --world student_drop/hidden_world_state.json --out reports/hidden_selfcheck.json`
+
+Nguồn: `src/reports/hidden_selfcheck.json` (40 claim × 5 seed = 200 trial mỗi shape).
+
+| Shape | Lỗi | Nghi lộ secret | resolved / denied / escalated / needs_info | Mean / p95 steps |
+| --- | --- | --- | --- | --- |
+| workflow | 0 | 0 | 90 / 95 / 10 / 5 | 4.48 / 5 |
+| single | 0 | 0 | 90 / 95 / 10 / 5 | 4.90 / 5 |
+| orchestrator | 0 | 0 | 90 / 95 / 10 / 5 | 5.50 / 6 |
+
+Kiểm tra bổ sung ngoài lệnh của đề:
+
+- 600 file trace của bộ hidden đều đúng Trace contract v1 (`run_id` khớp, `events` là list).
+- Quét 600 trace với 265 chuỗi cấm lấy từ chính bộ hidden (SĐT, địa chỉ, ghi chú nội bộ, tên hàng của 48 đơn; 40 `parent_secret`; nội dung ticket; header): 0 file chứa.
+- Ba shape do ba người viết độc lập cho cùng status trên cả 200 cặp (claim, seed), và mỗi shape ổn định qua 5 seed.
+- Ở 6 claim mà ticket khai sai số ngày trễ (C-H01, C-H02, C-H04, C-H13, C-H20, C-H40), cả ba shape đều theo `delay_days` của order row.
+
+Bộ hidden không kèm nhãn nên lệnh trên không tính được pass rate; pass rate hidden (cổng ≥ 0.75) chỉ có khi giảng viên chấm bằng grader riêng. Ba shape trả giống nhau là tín hiệu tốt nhưng không chứng minh đúng: nếu cả nhóm cùng hiểu sai một luật thì cả ba sẽ sai như nhau.
 
 Quyết định kiến trúc và lý do: xem `report/team/decision_adr.md`. Phiếu nghiên cứu và ablation: xem `report/team/research_card.md`.
 
@@ -89,7 +123,7 @@ Chi tiết đóng góp của từng thành viên nằm trong `TEAM.md` (bảng �
 
 ## 7. Hạn chế và hướng cải thiện
 
-MockLLM không phải model sản xuất và tất định theo seed, nên 5 seed chỉ phủ một phần hành vi; với model thật, rủi ro chính là model chọn sai tool, dừng sớm hoặc bị injection theo kiểu ngoài danh sách nhóm đã test. Latency là `unavailable` vì lab không đo. Kết luận "workflow rẻ nhất mà vẫn 1.000 pass" chỉ đúng trên corpus public 14 claim; nếu bộ hidden có claim cần tra cứu song song nhiều nguồn hoặc mục tiêu soạn văn bản trả lời khách, khoảng cách cost có thể thu hẹp và lời khuyên đổi shape xem điều kiện ở `decision_adr.md`. Chưa kiểm hai claim cùng đơn chạy đồng thời end-to-end (host đã có test riêng ở `test_order_cap_and_approval_binding.py`). Hướng cải thiện: chạy lại toàn bộ cổng trên `student_drop/` khi nhận bộ hidden, và thêm kịch bản injection theo các loại claim của bộ hidden.
+MockLLM không phải model sản xuất và tất định theo seed, nên 5 seed chỉ phủ một phần hành vi; với model thật, rủi ro chính là model chọn sai tool, dừng sớm hoặc bị injection theo kiểu ngoài danh sách nhóm đã test. Latency là `unavailable` vì lab không đo. Kết luận "workflow rẻ nhất mà vẫn 1.000 pass" chỉ đúng trên corpus public 14 claim; nếu bộ hidden có claim cần tra cứu song song nhiều nguồn hoặc mục tiêu soạn văn bản trả lời khách, khoảng cách cost có thể thu hẹp và lời khuyên đổi shape xem điều kiện ở `decision_adr.md`. Chưa kiểm hai claim cùng đơn chạy đồng thời end-to-end (host đã có test riêng ở `test_order_cap_and_approval_binding.py`). Đã tự kiểm trên `student_drop/` (mục 4.1): không lỗi, không rò rỉ, nhưng chưa có nhãn nên chưa biết pass rate hidden. Hướng cải thiện: thêm kịch bản injection theo các loại claim của bộ hidden.
 
 ## 8. Tài liệu tham khảo
 

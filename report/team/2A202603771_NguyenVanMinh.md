@@ -11,12 +11,13 @@
 
 ## 2. Phần việc phụ trách
 
-Tôi phụ trách **Shape B — Single ReAct Agent**:
+Tôi phụ trách hai phần:
 
-| Hạng mục | File |
+| Hạng mục | Nội dung |
 |---|---|
-| Cài đặt shape | `src/lab8/shapes/single.py` |
+| **Shape B — Single ReAct Agent** | `src/lab8/shapes/single.py` |
 | Bộ test riêng (nằm trong cổng host) | `src/tests/test_single_shape.py` |
+| **Kiểm thử tích hợp cuối** | Chạy lại toàn bộ cổng sau khi mọi PR đã merge vào `main`, tự kiểm trên bộ hidden `student_drop/`, ghi kết quả vào mục 4.1 của `group_report.md` |
 
 Mục tiêu: một agent duy nhất xử lý claim hoàn phí trong vòng ReAct có giới hạn bước, trong đó **model chỉ chọn bước đọc tiếp theo**, còn số tiền, quyền sở hữu đơn, approval và việc ghi ledger hoàn toàn do code và host quyết định.
 
@@ -99,24 +100,58 @@ Môi trường: Python 3.12.16, macOS arm64. Mọi lệnh chạy trong `src/`.
 | Kiểm tra | Lệnh | Kết quả |
 |---|---|---|
 | Cài đặt | `python -m lab8.smoke` | `lab8.smoke pass` |
-| Cổng host | `python -m pytest -q` | **126 passed** (54 gốc + 35 test single + 37 test orchestrator của nhóm) |
+| Cổng host | `python -m pytest -q` | **126 passed** tại thời điểm merge PR single (54 gốc + 35 single + 37 orchestrator) |
 | Ma trận student | `python -m pytest -q -m student -o addopts= -k "single and not workflow and not orchestrator and not swarm"` | **62 passed** (T01–T14 × 5 seed, T11, T12) |
 | Định dạng bài nộp | `python -m lab8.check_submission` | `[ OK ] shape single: format đúng, 12/12` |
 | Crash / resume | 5 claim × 3 điểm crash (`before_effect`, `after_effect_before_checkpoint`, `after_checkpoint`), chạy lại 2 lần | **15/15** an toàn: đúng 1 refund, 1 audit `refund_committed` |
 | Rò rỉ trace | `grep -l "CANARY_SECRET\|parent_secret\|Authorization" traces/R-single-*` | Không có file nào |
 
-### Benchmark nháp: single so với swarm
+### Benchmark public của nhóm
 
-14 claim public × seed `11, 22, 33, 44, 55`. Đây là số tự chạy để đánh giá shape, không phải `reports/benchmark.json` chính thức của nhóm.
+Nguồn: `src/reports/benchmark.json` (14 claim × seed `11, 22, 33, 44, 55`, commit chốt `fb60113`).
 
 | Shape | Pass rate | Pass^5 | Variance | Cost/success (VND mô phỏng) | Mean steps |
 |---|:--:|:--:|:--:|:--:|:--:|
-| **single** | **1.000** | **1.000** | **0.000000** | **44.33** | 4.79 |
+| workflow | 1.000 | 1.000 | 0 | 27.86 | 4.36 |
+| **single** | **1.000** | **1.000** | **0** | **44.33** | 4.79 |
+| orchestrator | 1.000 | 1.000 | 0 | 57.19 | 5.36 |
 | swarm | 0.986 | 0.929 | 0.000816 | 49.57 | 2.80 |
 
-- Single pass mọi trial, không dao động giữa các seed, và rẻ hơn swarm khoảng 11% trên mỗi lần thành công.
+- Single pass mọi trial, không dao động giữa các seed, rẻ hơn swarm khoảng 11% và rẻ hơn orchestrator khoảng 22% trên mỗi lần thành công. Workflow rẻ nhất vì không gọi model, nên nhóm chọn workflow trong ADR.
 - Cost/success từng là 29.16 khi prompt chỉ có tên bước. Sau khi thêm `SYSTEM_RULES` và ticket, con số là 44.33 — đây là con số so sánh công bằng, vì swarm cũng đưa ticket vào prompt.
 - Run id minh họa: `R-single-C-014-s11`, `R-single-C-012-s11`, `R-single-C-002-s55`.
+
+### Kiểm thử tích hợp cuối (sau khi merge mọi PR)
+
+Chạy trên `main` tại commit `554c6d2`; mã nguồn và test trong `src/lab8`, `src/tests` trùng với commit chốt `fb60113`.
+
+| Kiểm tra | Kết quả |
+|---|---|
+| Smoke | `lab8.smoke pass` |
+| Cổng host `python -m pytest -q` | **202 passed**, 0 failed |
+| Ma trận student + bảo mật `python -m pytest -q -m student -o addopts=` | **378 passed**, 0 failed (mỗi shape 62/62 ma trận; workflow 42, single 42, orchestrator 46 test bảo mật) |
+| Tái lập benchmark | Chạy lại lệnh benchmark public: **khớp hoàn toàn** `src/reports/benchmark.json` ở cả 4 shape |
+| Crash suite | **20/20**, khớp `src/reports/crash.json` |
+| `python -m lab8.check_submission` | **0 FAIL** |
+
+### Tự kiểm trên bộ hidden `student_drop/`
+
+`student_drop/` đặt trong `src/` theo `src/README.md` và giữ trong `.gitignore` (không commit, theo `RULES.md`). Nguồn số liệu: `src/reports/hidden_selfcheck.json`.
+
+| Shape | Trial | Lỗi | Nghi lộ secret | resolved / denied / escalated / needs_info |
+|---|:--:|:--:|:--:|:--:|
+| workflow | 200 | 0 | 0 | 90 / 95 / 10 / 5 |
+| **single** | **200** | **0** | **0** | **90 / 95 / 10 / 5** |
+| orchestrator | 200 | 0 | 0 | 90 / 95 / 10 / 5 |
+
+Kiểm tra bổ sung tôi tự viết thêm:
+
+- 600 file trace đều đúng Trace contract v1.
+- Quét 600 trace với 265 chuỗi cấm lấy từ bộ hidden (SĐT, địa chỉ, ghi chú nội bộ, tên hàng, `parent_secret`, ticket, header): 0 file chứa. Lần quét đầu báo nhầm vì claim C-H18 có ticket rỗng (chuỗi rỗng khớp mọi file); đã loại chuỗi rỗng và quét lại.
+- Ba shape cho cùng status trên cả 200 cặp (claim, seed); mỗi shape ổn định qua 5 seed.
+- Ở 6 claim ticket khai sai số ngày trễ (C-H01, C-H02, C-H04, C-H13, C-H20, C-H40), cả ba shape theo order row; swarm sai ở seed 55.
+
+Bộ hidden không có nhãn nên chưa tính được pass rate; con số này chỉ có khi giảng viên chấm.
 
 **Giới hạn:** số liệu dựa trên MockLLM; chi phí là VND mô phỏng, không phải hóa đơn API; latency không đo. Single đạt 1.000 vì mọi quyết định rủi ro (tiền, quyền sở hữu, policy hiện hành) đều nằm trong code và tool. Với model thật, rủi ro chính là model chọn sai tool hoặc dừng sớm — đã được chặn bởi giới hạn 8 bước và việc code kiểm tra quote trước khi gọi host.
 
@@ -126,7 +161,7 @@ Môi trường: Python 3.12.16, macOS arm64. Mọi lệnh chạy trong `src/`.
 |---|---|
 | Claude Code | Đọc tài liệu lab, đề xuất thiết kế vòng ReAct và prompt, viết `single.py` và `test_single_shape.py`, cài môi trường |
 
-**Cách tự kiểm tra:** chạy cổng host và ma trận student riêng cho single; chạy thử crash/resume ở cả 3 điểm crash; grep trace tìm secret; đọc trace `R-single-C-014-s11.json` để đối chiếu từng event với luật nghiệp vụ; so benchmark với swarm. Mọi số liệu trong báo cáo lấy trực tiếp từ output của lệnh, không gõ tay.
+**Cách tự kiểm tra:** chạy cổng host và ma trận student riêng cho single; chạy lại toàn bộ cổng và benchmark sau khi merge để so với file đã commit; tự viết script quét trace bộ hidden; chạy thử crash/resume ở cả 3 điểm crash; grep trace tìm secret; đọc trace `R-single-C-014-s11.json` để đối chiếu từng event với luật nghiệp vụ; so benchmark với swarm. Mọi số liệu trong báo cáo lấy trực tiếp từ output của lệnh, không gõ tay.
 
 ## 6. Tự đánh giá
 
@@ -136,4 +171,5 @@ Môi trường: Python 3.12.16, macOS arm64. Mọi lệnh chạy trong `src/`.
 | Ranh giới code / model | Rõ ràng — model chỉ chọn bước đọc; tiền, approval, ghi ledger do code và host |
 | An toàn | Không lộ secret, chống prompt injection trong ticket, crash/resume không tạo refund thứ hai |
 | Hiệu quả | Tối đa 3 bước ReAct, chi phí thấp hơn swarm trong cùng điều kiện |
-| Còn lại | Tự kiểm trên `student_drop/` khi giảng viên phát bộ hidden |
+| Kiểm thử cuối | Toàn bộ cổng xanh sau khi merge, benchmark tái lập khớp, bộ hidden chạy sạch (0 lỗi, 0 rò rỉ) |
+| Còn lại | Pass rate hidden chờ giảng viên chấm |
