@@ -5,7 +5,7 @@
 - Tên nhóm: G3
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-Day08-G3-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: https://github.com/lqkhanhno/K5-L3B-Day08-G3-FromWorkflowsToAgents, nhánh `main`, commit chốt: COMMIT_CHOT
+- URL repo, nhánh nộp, commit chốt: https://github.com/lqkhanhno/K5-L3B-Day08-G3-FromWorkflowsToAgents, nhánh `main`, commit chốt: fb60113
 
 ## Thành viên
 

@@ -6,7 +6,7 @@ Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/rep
 
 - Tên nhóm: G3 (Lớp L3B)
 - Thành viên: xem `TEAM.md` — 5 người: Thịnh (workflow), Khánh (ledger/policy/crash), Thắng (Durability & Security), Khoa (orchestrator), Minh (single)
-- Commit chốt (trùng `report/team/decision_adr.md`): COMMIT_CHOT
+- Commit chốt (trùng `report/team/decision_adr.md`): fb60113
 
 ## 2. Mục tiêu và cách tiếp cận
 

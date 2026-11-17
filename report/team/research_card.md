@@ -27,7 +27,7 @@ Phần này nối tiếp phần mini research ở buổi lý thuyết (slide 62�
 
 ## Kết quả ablation
 
-- Lệnh đã chạy (copy nguyên văn): `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json` (chạy trong `src/`, tại commit `06ff940`)
+- Lệnh đã chạy (copy nguyên văn): `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json` (chạy trong `src/`, tại commit `fb60113`)
 - Run id / file report: `src/reports/benchmark.json`; trace dẫn chứng `src/traces/R-workflow-C-002-s55.json`, `src/traces/R-workflow-C-014-s11.json`
 - Kết quả so với hypothesis (đúng / sai / không kết luận được), kèm số liệu: Đúng. workflow pass 1.000, pass^5 1.000, var 0, cost/success 27.86; single 1.000 / 1.000 / 0 / 44.33; orchestrator 1.000 / 1.000 / 0 / 57.19; swarm 0.986 / 0.929 / 0.000816 / 49.57 với đúng 1 trial sai là C-002 seed 55. Thêm agent không tăng pass, cost/success tăng từ 1.6 (single) đến 2.1 (orchestrator) lần so với workflow, và chỉ swarm có variance khác 0 đúng như lỗi dự kiến.
 - Giới hạn: MockLLM không phải model sản xuất, latency là `unavailable`.
